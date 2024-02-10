@@ -37,7 +37,7 @@ pipeline {
                 }
             }
 
-        stage('SG') {
+        stage('VPN') {
                 steps {
                     sh """
                     cd 03-vpn
@@ -48,7 +48,7 @@ pipeline {
             }
         stage('Databases and APP-ALB') {
             parallel{
-                stage{
+                stage("Databases"){
                     steps {
                         sh """
                         cd 04-databases
@@ -57,7 +57,7 @@ pipeline {
                         """
                     }
                 stage{
-                    steps {
+                    steps("APP-ALB") {
                         sh """
                         cd 05-app-alb
                         terraform init --reconfigure
