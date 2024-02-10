@@ -56,6 +56,7 @@ pipeline {
                         terraform apply -auto-approve
                         """
                     }
+                }
                 stage{
                     steps("APP-ALB") {
                         sh """
@@ -68,7 +69,6 @@ pipeline {
             }
          }
         }
-    }
 
     post { 
         always { 
