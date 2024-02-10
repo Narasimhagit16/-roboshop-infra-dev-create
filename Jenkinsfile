@@ -6,7 +6,7 @@ pipeline {
     }
     parameters {
 
-        choice(name: 'action', choices: ['apply', 'destroy'])
+           booleanParam(name: 'Destroy', defaultValue: false)
 
         
     }
@@ -14,38 +14,15 @@ pipeline {
         timeout(time: 1, unit : 'HOURS')
         disableConcurrentBuilds()
         ansiColor('xterm')
-        
-    }
+
+    //         when {
+    //             expression{
+    //           params.Deploy
+    //         }        
+    // }
+
     stages{
-        stage('VPC') {
-                steps {
-                    sh """
-                    cd 01-vpc 
-                    terraform init --reconfigure
-                    terraform apply -auto-approve
-                    """
-                }
-            }
 
-        stage('SG') {
-                steps {
-                    sh """
-                    cd 02-sg 
-                    terraform init --reconfigure
-                    terraform apply -auto-approve
-                    """
-                }
-            }
-
-        stage('VPN') {
-                steps {
-                    sh """
-                    cd 03-vpn
-                    terraform init --reconfigure
-                    terraform apply -auto-approve
-                    """
-                }
-            }
         stage('Databases and APP-ALB') {
             parallel{
                 stage("Databases"){
@@ -53,7 +30,7 @@ pipeline {
                         sh """
                         cd 04-databases
                         terraform init --reconfigure
-                        terraform apply -auto-approve
+                        terraform destroy -auto-approve
                         """
                     }
                 }
@@ -62,12 +39,44 @@ pipeline {
                         sh """
                         cd 05-app-alb
                         terraform init --reconfigure
-                        terraform apply -auto-approve
+                        terraform destroy -auto-approve
                         """
                     }
                 }
             }
          }
+
+        stage('VPN') {
+                steps {
+                    sh """
+                    cd 03-vpn
+                    terraform init --reconfigure
+                    terraform destroy -auto-approve
+                    """
+                }
+            }
+            
+        stage('SG') {
+                steps {
+                    sh """
+                    cd 02-sg 
+                    terraform init --reconfigure
+                    terraform destroy -auto-approve
+                    """
+                }
+            }
+
+        stage('VPC') {
+                steps {
+                    sh """
+                    cd 01-vpc 
+                    terraform init --reconfigure
+                    terraform destroy -auto-approve
+                    """
+                }
+            }
+
+
         }
 
     post { 
