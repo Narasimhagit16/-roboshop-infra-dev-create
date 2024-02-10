@@ -19,7 +19,7 @@ pipeline {
     //             expression{
     //           params.Deploy
     //         }        
-    // }
+     }
 
     stages{
 
@@ -55,7 +55,7 @@ pipeline {
                     """
                 }
             }
-            
+
         stage('SG') {
                 steps {
                     sh """
