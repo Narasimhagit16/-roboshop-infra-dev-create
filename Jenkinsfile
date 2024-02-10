@@ -57,8 +57,8 @@ pipeline {
                         """
                     }
                 }
-                stage{
-                    steps("APP-ALB") {
+                stage("APP-ALB"){
+                    steps {
                         sh """
                         cd 05-app-alb
                         terraform init --reconfigure
